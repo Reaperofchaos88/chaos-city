@@ -16,7 +16,7 @@ jobs:
           cd daemon
           gcc -O2 -o chaossigil chaossigil.c
       - name: Lint shell scripts
-        uses: koalaman/shellcheck-action@v1
+        uses: ludeeus/action-shellcheck@master
         with:
           files: 'shipper/**/*.sh, cli/**/*.sh'
       - name: Lint Python
