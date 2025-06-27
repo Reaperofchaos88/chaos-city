@@ -1,0 +1,42 @@
+name: Chaos City CI
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [16.x]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build daemon
+        run: |
+          cd daemon
+          gcc -O2 -o chaossigil chaossigil.c
+      - name: Lint shell scripts
+        uses: koalaman/shellcheck-action@v1
+        with:
+          files: 'shipper/**/*.sh, cli/**/*.sh'
+      - name: Lint Python
+        run: |
+          cd shipper
+          pip install flake8
+          flake8 .
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install & build webapp
+        run: |
+          cd webapp
+          npm ci
+          npm run build
+      - name: Test CLI
+        run: |
+          cd cli
+          pip install -r requirements.txt
+          pytest
+      - name: All done
+        run: echo "Chaos City pipeline completed 🌀"
