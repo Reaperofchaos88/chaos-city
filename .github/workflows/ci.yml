@@ -31,7 +31,7 @@ jobs:
       - name: Install & build webapp
         run: |
           cd webapp
-          npm ci
+          npm install
           npm run build
       - name: Test CLI
         run: |
